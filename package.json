@@ -4,13 +4,16 @@
   "description": "Local stdio MCP bridge for Ditto Memory",
   "type": "module",
   "bin": {
-    "ditto-mcp": "./dist/cli.js"
+    "ditto-mcp": "dist/cli.js"
   },
   "files": [
     "dist",
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
