@@ -1,0 +1,37 @@
+{
+  "name": "@heyditto/mcp",
+  "version": "0.1.0",
+  "description": "Local stdio MCP bridge for Ditto Memory",
+  "type": "module",
+  "bin": {
+    "ditto-mcp": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build"
+  },
+  "keywords": [
+    "ditto",
+    "mcp",
+    "model-context-protocol",
+    "stdio",
+    "oauth"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
