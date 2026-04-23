@@ -8,8 +8,8 @@ export function apiBaseURL(): string {
   return (process.env.DITTO_API_BASE || "https://api.heyditto.ai").replace(/\/+$/, "");
 }
 
-export function mcpSseURL(): string {
-  return `${apiBaseURL()}/mcp/sse`;
+export function mcpServerURL(): string {
+  return `${apiBaseURL()}/mcp`;
 }
 
 export function configDir(): string {

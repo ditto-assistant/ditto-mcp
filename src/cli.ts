@@ -2,7 +2,7 @@
 import { clearAuth } from "./store.js";
 import { authStatus, login } from "./oauth.js";
 import { serveStdio } from "./stdio.js";
-import { mcpSseURL, packageName, packageVersion } from "./config.js";
+import { mcpServerURL, packageName, packageVersion } from "./config.js";
 
 function usage(): string {
   return `${packageName} ${packageVersion}
@@ -45,7 +45,7 @@ async function main(): Promise<void> {
               },
             },
             remote: {
-              sseUrl: mcpSseURL(),
+              url: mcpServerURL(),
             },
           },
           null,

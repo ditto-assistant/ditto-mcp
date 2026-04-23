@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import http from "node:http";
+import type { Socket } from "node:net";
 import { URLSearchParams } from "node:url";
 import { apiBaseURL, packageName } from "./config.js";
 import { openBrowser } from "./browser.js";
@@ -36,12 +37,26 @@ async function startLoopback(state: string): Promise<{
   redirectUri: string;
   waitForCode: Promise<string>;
 }> {
+  const sockets = new Set<Socket>();
   let resolveCode!: (code: string) => void;
   let rejectCode!: (error: unknown) => void;
   const waitForCode = new Promise<string>((resolve, reject) => {
     resolveCode = resolve;
     rejectCode = reject;
   });
+
+  let closed = false;
+  const closeServer = () => {
+    if (closed) {
+      return;
+    }
+    closed = true;
+    server.close();
+    server.closeAllConnections?.();
+    for (const socket of sockets) {
+      socket.destroy();
+    }
+  };
 
   const server = http.createServer((req, res) => {
     if (!req.url) {
@@ -62,35 +77,51 @@ async function startLoopback(state: string): Promise<{
     const error = url.searchParams.get("error");
 
     if (error) {
-      res.writeHead(400, { "Content-Type": "text/html" });
+      res.writeHead(400, {
+        "Content-Type": "text/html",
+        Connection: "close",
+      });
       res.end(callbackPage("Ditto authorization failed", error));
       rejectCode(new Error(error));
-      server.close();
+      setTimeout(closeServer, 25);
       return;
     }
 
     if (returnedState !== state || !code) {
-      res.writeHead(400, { "Content-Type": "text/html" });
+      res.writeHead(400, {
+        "Content-Type": "text/html",
+        Connection: "close",
+      });
       res.end(callbackPage("Ditto authorization failed", "Invalid callback state."));
       rejectCode(new Error("OAuth callback state mismatch"));
-      server.close();
+      setTimeout(closeServer, 25);
       return;
     }
 
-    res.writeHead(200, { "Content-Type": "text/html" });
+    res.writeHead(200, {
+      "Content-Type": "text/html",
+      Connection: "close",
+    });
     res.end(callbackPage("Ditto connected", "You can close this tab and return to your editor."));
     resolveCode(code);
-    setTimeout(() => server.close(), 500);
+    setTimeout(closeServer, 25);
+  });
+  server.on("connection", (socket) => {
+    sockets.add(socket);
+    socket.on("close", () => {
+      sockets.delete(socket);
+    });
   });
 
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
     server.listen(0, "127.0.0.1", resolve);
   });
+  server.unref();
 
   const address = server.address();
   if (!address || typeof address === "string") {
-    server.close();
+    closeServer();
     throw new Error("Loopback server address was unavailable");
   }
 

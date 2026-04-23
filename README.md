@@ -24,7 +24,8 @@ npx -y @heyditto/mcp logout
 
 The first `stdio` run also starts login if no valid Ditto OAuth token is
 available. The browser is used only for Ditto authorization; MCP traffic is
-proxied locally over stdio to Ditto's hosted MCP server.
+proxied locally over stdio to Ditto's hosted Streamable HTTP MCP server at
+`https://api.heyditto.ai/mcp`.
 
 ## Environment
 

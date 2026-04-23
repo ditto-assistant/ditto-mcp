@@ -1,5 +1,5 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -9,7 +9,7 @@ import {
   ListToolsRequestSchema,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { mcpSseURL, packageVersion } from "./config.js";
+import { mcpServerURL, packageVersion } from "./config.js";
 import { getAccessToken } from "./oauth.js";
 
 async function connectRemote(): Promise<Client> {
@@ -18,7 +18,7 @@ async function connectRemote(): Promise<Client> {
     name: "ditto-mcp-stdio-bridge",
     version: packageVersion,
   });
-  const transport = new SSEClientTransport(new URL(mcpSseURL()), {
+  const transport = new StreamableHTTPClientTransport(new URL(mcpServerURL()), {
     requestInit: {
       headers: {
         Authorization: `Bearer ${token}`,
