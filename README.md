@@ -32,3 +32,10 @@ proxied locally over stdio to Ditto's hosted Streamable HTTP MCP server at
 - `DITTO_API_BASE`: Ditto API base URL. Defaults to `https://api.heyditto.ai`.
 - `DITTO_CONFIG_DIR`: directory for local OAuth credentials. Defaults to
   `$XDG_CONFIG_HOME/heyditto/mcp` or `~/.config/heyditto/mcp`.
+
+## Tools
+
+The bridge does not define or transform Ditto tools locally. It proxies
+`tools/list`, `tools/call`, resources, and resource templates to Ditto's hosted
+MCP server, so tool definitions and compatibility behavior come from the
+backend.
