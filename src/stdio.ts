@@ -4,6 +4,8 @@ import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
+  GetPromptRequestSchema,
+  ListPromptsRequestSchema,
   ListResourceTemplatesRequestSchema,
   ListResourcesRequestSchema,
   ListToolsRequestSchema,
@@ -40,6 +42,7 @@ export async function serveStdio(): Promise<void> {
       capabilities: {
         tools: {},
         resources: {},
+        prompts: {},
       },
     },
   );
@@ -62,6 +65,14 @@ export async function serveStdio(): Promise<void> {
 
   server.setRequestHandler(ListResourceTemplatesRequestSchema, async () => {
     return remote.listResourceTemplates();
+  });
+
+  server.setRequestHandler(ListPromptsRequestSchema, async () => {
+    return remote.listPrompts();
+  });
+
+  server.setRequestHandler(GetPromptRequestSchema, async (request) => {
+    return remote.getPrompt(request.params);
   });
 
   const transport = new StdioServerTransport();
