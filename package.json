@@ -18,7 +18,8 @@
     "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "prepack": "npm run build",
-    "release": "semantic-release"
+    "release": "semantic-release",
+    "test": "npm run build && node --test test/*.test.mjs"
   },
   "keywords": [
     "ditto",
